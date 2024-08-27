@@ -14,9 +14,6 @@ func (h *Handler) getMusicById(c *gin.Context) {
 
 }
 
-func (h *Handler) getAllMusicByRating(c *gin.Context) {
-}
-
 func (h *Handler) updateMusic(c *gin.Context) {
 
 }

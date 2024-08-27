@@ -1,15 +1,9 @@
 package handler
 
-import (
-	"github.com/gin-gonic/gin"
-	"net/http"
-)
+import "github.com/gin-gonic/gin"
 
 func (h *Handler) createAlbum(c *gin.Context) {
-	id, _ := c.Get(clientCTX)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
+
 }
 
 func (h *Handler) getAllAlbum(c *gin.Context) {

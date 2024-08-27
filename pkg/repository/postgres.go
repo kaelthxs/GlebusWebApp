@@ -11,7 +11,6 @@ const (
 	musicTable       = "music"
 	authorAlbumTable = "author_album"
 	authorMusicTable = "author_music"
-	reviewTable      = "review"
 )
 
 type Config struct {
