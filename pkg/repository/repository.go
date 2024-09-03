@@ -19,11 +19,15 @@ type Album interface {
 type Music interface {
 }
 
+type Review interface {
+}
+
 type Repository struct {
 	Authorization
 	Client
 	Album
 	Music
+	Review
 }
 
 func NewRepository(db *sqlx.DB) *Repository {

@@ -22,7 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.clientIdentity)
 	{
 		client := api.Group("/client")
 		{
@@ -48,6 +48,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			music.GET("/:id", h.getMusicById)
 			music.PUT("/:id", h.updateMusic)
 			music.DELETE("/:id", h.deleteMusic)
+		}
+
+		review := api.Group("/review")
+		{
+			review.POST("/", h.createReview)
+			review.GET("/", h.getAllReview)
+			review.GET("/:id", h.getReviewById)
+			review.PUT("/:id", h.updateReview)
+			review.DELETE("/:id", h.deleteReview)
 		}
 	}
 	return router
