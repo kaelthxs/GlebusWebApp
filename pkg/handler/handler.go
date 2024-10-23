@@ -45,6 +45,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			music.POST("/", h.createMusic)
 			music.GET("/", h.getAllMusic)
+			music.GET("/", h.getAllMusicByRating)
 			music.GET("/:id", h.getMusicById)
 			music.PUT("/:id", h.updateMusic)
 			music.DELETE("/:id", h.deleteMusic)
