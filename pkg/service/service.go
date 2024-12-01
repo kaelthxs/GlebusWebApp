@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"oooGlebusApi"
 	"oooGlebusApi/pkg/repository"
 )
@@ -11,6 +12,10 @@ type Authorization interface {
 }
 
 type Client interface {
+	GetAllClient(c *gin.Context)
+	GetClientById(c *gin.Context)
+	UpdateClient(c *gin.Context)
+	DeleteClient(c *gin.Context)
 }
 
 type Album interface {

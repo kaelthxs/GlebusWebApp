@@ -2,17 +2,21 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	"oooGlebusApi/pkg/service"
 )
 
 type Handler struct {
 	services *service.Service
+	db       *sqlx.DB
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Service, db *sqlx.DB) *Handler {
+	return &Handler{
+		services: services,
+		db:       db,
+	}
 }
-
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
@@ -22,7 +26,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.clientIdentity)
 	{
 		client := api.Group("/client")
 		{
@@ -45,9 +49,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			music.POST("/", h.createMusic)
 			music.GET("/", h.getAllMusic)
+			//music.GET("/", h.getAllMusicByRating)
 			music.GET("/:id", h.getMusicById)
 			music.PUT("/:id", h.updateMusic)
 			music.DELETE("/:id", h.deleteMusic)
+		}
+
+		review := api.Group("/review")
+		{
+			review.POST("/", h.createReview)
+			review.GET("/", h.getAllReview)
+			review.GET("/:id", h.getReviewById)
+			review.PUT("/:id", h.updateReview)
+			review.DELETE("/:id", h.deleteReview)
 		}
 	}
 	return router

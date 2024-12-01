@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"oooGlebusApi"
 )
@@ -11,6 +12,10 @@ type Authorization interface {
 }
 
 type Client interface {
+	GetAllClient(c *gin.Context)
+	GetClientById(c *gin.Context)
+	UpdateClient(c *gin.Context)
+	DeleteClient(c *gin.Context)
 }
 
 type Album interface {
