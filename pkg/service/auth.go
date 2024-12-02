@@ -24,6 +24,10 @@ type AuthService struct {
 	repo repository.Authorization
 }
 
+func (s *AuthService) ParseToken(token string) (int, error) {
+	panic("implement me")
+}
+
 func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }

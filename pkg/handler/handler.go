@@ -40,6 +40,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			album.POST("/", h.createAlbum)
 			album.GET("/", h.getAllAlbum)
+			album.GET("/byrating/", h.getAllAlbumsByRating)
 			album.GET("/:id", h.getAlbumById)
 			album.PUT("/:id", h.updateAlbum)
 			album.DELETE("/:id", h.deleteAlbum)
@@ -49,7 +50,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			music.POST("/", h.createMusic)
 			music.GET("/", h.getAllMusic)
-			//music.GET("/", h.getAllMusicByRating)
 			music.GET("/:id", h.getMusicById)
 			music.PUT("/:id", h.updateMusic)
 			music.DELETE("/:id", h.deleteMusic)
