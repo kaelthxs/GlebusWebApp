@@ -53,7 +53,41 @@ func (r *Handler) getAllAlbum(c *gin.Context) {
 
 	var albums []oooGlebusApi.Album
 
-	query := "SELECT album.id, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR'"
+	query := "SELECT album.id, client.username, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR'"
+
+	log.Println("Executing query:", query)
+
+	if r.db == nil {
+		log.Fatalln("Database connection is nil")
+		c.JSON(500, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	err := r.db.Select(&albums, query)
+
+	if err != nil {
+		log.Println("Error executing query:", err)
+		c.JSON(500, gin.H{"error": "Failed to fetch clients"})
+		return
+	}
+
+	log.Printf("Fetched %d albums", len(albums))
+
+	if len(albums) == 0 {
+		c.JSON(200, gin.H{"message": "No clients found"})
+		return
+	}
+
+	c.JSON(200, albums)
+	log.Println(albums)
+}
+
+func (r *Handler) getAllAlbumsByRating(c *gin.Context) {
+	log.Println("getAllAlbumByRating called")
+
+	var albums []oooGlebusApi.Album
+
+	query := "SELECT album.id, client.username, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR' ORDER BY rating DESC"
 	log.Println("Executing query:", query)
 
 	if r.db == nil {
@@ -79,13 +113,15 @@ func (r *Handler) getAllAlbum(c *gin.Context) {
 	c.JSON(200, albums)
 }
 
-func (r *Handler) getAllAlbumsByRating(c *gin.Context) {
-	log.Println("getAllAlbumByRating called")
+func (r *Handler) getAllAlbumsByRatingByClientId(c *gin.Context) {
+	log.Println("getAllAlbumByRatingByClientId called")
+
+	id := c.Param("id")
 
 	var albums []oooGlebusApi.Album
 
-	query := "SELECT album.id, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR' ORDER BY rating DESC"
-	log.Println("Executing query:", query)
+	query := "SELECT album.id, client.username, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR' and client.id = $1 ORDER BY rating DESC"
+	log.Println("Executing query:", query, id)
 
 	if r.db == nil {
 		log.Fatalln("Database connection is nil")
@@ -113,17 +149,18 @@ func (r *Handler) getAllAlbumsByRating(c *gin.Context) {
 func (h *Handler) getAlbumById(c *gin.Context) {
 	id := c.Param("id")
 
-	var albums oooGlebusApi.Album
-	query := "SELECT album.id, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR' AND id = $1"
+	var album oooGlebusApi.Album
 
-	err := h.db.Get(&albums, query, id)
+	query := `SELECT album.id, client.username, album.name, album.countofplays, album.rating, album.countofmusic, album.status, album.image_uri FROM album JOIN author_album ON album.id = author_album.album_id JOIN client ON author_album.author_id = client.id WHERE client.role = 'AUTHOR' AND album_id = $1`
+
+	err := h.db.Get(&album, query, id)
 	if err != nil {
 		log.Println("Error fetching album by ID:", err)
 		c.JSON(404, gin.H{"error": "Album not found"})
 		return
 	}
 
-	c.JSON(200, albums)
+	c.JSON(200, album)
 }
 
 func (h *Handler) updateAlbum(c *gin.Context) {

@@ -2,7 +2,8 @@ package oooGlebusApi
 
 type Album struct {
 	Id           int    `json:"id"`
-	Name         string `json:"countofplays"`
+	Username     string `json:"username"`
+	Name         string `json:"name"`
 	Countofplays int    `json:"countofplays"`
 	Rating       int    `json:"rating"`
 	Countofmusic int    `json:"countofmusic"`

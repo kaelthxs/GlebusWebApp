@@ -2,6 +2,7 @@ package oooGlebusApi
 
 type Music struct {
 	Id           int    `json:"id"`
+	Username     string `json:"username"`
 	Name         string `json:"name"`
 	Rating       int    `json:"rating"`
 	Countofplays int    `json:"countofplays"`

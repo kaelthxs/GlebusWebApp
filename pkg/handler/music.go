@@ -51,7 +51,7 @@ func (r *Handler) getAllMusic(c *gin.Context) {
 
 	var musics []oooGlebusApi.Music
 
-	query := "SELECT music.id, music.name, music.rating, music.countofplays, music.album_id, music.image_uri, music.audio_uri FROM music JOIN author_music ON music.id = author_music.music_id JOIN client ON author_music.author_id = client.id WHERE client.role = 'AUTHOR'"
+	query := "SELECT music.id, client.username, music.name, music.rating, music.countofplays, music.album_id, music.image_uri, music.audio_uri FROM music JOIN author_music ON music.id = author_music.music_id JOIN client ON author_music.author_id = client.id WHERE client.role = 'AUTHOR'"
 	log.Println("Executing query:", query)
 
 	if r.db == nil {
@@ -61,6 +61,39 @@ func (r *Handler) getAllMusic(c *gin.Context) {
 	}
 
 	err := r.db.Select(&musics, query)
+	if err != nil {
+		log.Println("Error executing query:", err)
+		c.JSON(500, gin.H{"error": "Failed to fetch clients"})
+		return
+	}
+
+	log.Printf("Fetched %d musics\n", len(musics))
+
+	if len(musics) == 0 {
+		c.JSON(200, gin.H{"message": "No musics found"})
+		return
+	}
+
+	c.JSON(200, musics)
+}
+
+func (r *Handler) getAllMusicByAlbumId(c *gin.Context) {
+	log.Println("getAllMusic called")
+
+	id := c.Param("id")
+
+	var musics []oooGlebusApi.Music
+
+	query := "SELECT music.id, client.username, music.name, music.rating, music.countofplays, music.album_id, music.image_uri, music.audio_uri FROM music JOIN author_music ON music.id = author_music.music_id JOIN client ON author_music.author_id = client.id WHERE client.role = 'AUTHOR' AND album_id = $1"
+	log.Println("Executing query:", query, id)
+
+	if r.db == nil {
+		log.Fatalln("Database connection is nil")
+		c.JSON(500, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	err := r.db.Select(&musics, query, id)
 	if err != nil {
 		log.Println("Error executing query:", err)
 		c.JSON(500, gin.H{"error": "Failed to fetch clients"})

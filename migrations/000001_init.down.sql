@@ -8,5 +8,7 @@ drop table album;
 
 drop table music;
 
+drop table review;
+
 
 

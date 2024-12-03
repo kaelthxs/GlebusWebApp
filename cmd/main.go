@@ -40,6 +40,7 @@ func main() {
 	server := new(oooGlebusApi.Server)
 	if err := server.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
 		logrus.Fatalf("error:%s", err.Error())
+
 	}
 }
 
